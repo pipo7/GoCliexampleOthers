@@ -18,9 +18,9 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/spf13/cobra"
-
 	"github.com/spf13/viper"
 )
 
@@ -37,9 +37,12 @@ var rootCmd = &cobra.Command{
 		fmt.Println("use cliexample2 with subCommands foo or bar")
 		flagstring, _ := cmd.Flags().GetString("word")
 		fmt.Println("String passed to flag word is :", flagstring)
-		flagint, _ := cmd.Flags().GetInt64("myint")
+		flagint, _ := cmd.Flags().GetInt("myint")
 		fmt.Println("Int passed to flag myint is :", flagint)
-
+		d, _ := cmd.Flags().GetDuration("waittime")
+		fmt.Printf("d is duration %s passed via duration flag and %T\n", d, d)
+		time.Sleep(d)
+		fmt.Println("End of run")
 	},
 }
 
@@ -62,7 +65,9 @@ func init() {
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.Flags().StringP("word", "w", "meaning", "enter a word to find its meaning")
-	rootCmd.Flags().Int64P("myint", "i", 0, "enter any integer")
+	rootCmd.Flags().IntP("myint", "i", 0, "enter any integer")
+	rootCmd.Flags().DurationP("waittime", "s", 10, "Time in sec")
+
 }
 
 // initConfig reads in config file and ENV variables if set.
