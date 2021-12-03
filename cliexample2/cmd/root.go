@@ -18,13 +18,22 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"gopkg.in/validator.v2"
 )
 
 var cfgFile string
+
+var config Config
+
+type Config struct {
+	Operations int `json:"operations" validate:"min=10"`
+	Workers    int `json:"workers" validate:"min=10"`
+}
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -34,7 +43,7 @@ var rootCmd = &cobra.Command{
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("use cliexample2 with subCommands foo or bar")
+		fmt.Println("cliexample2 with subCommands foo or bar")
 		flagstring, _ := cmd.Flags().GetString("word")
 		fmt.Println("String passed to flag word is :", flagstring)
 		flagint, _ := cmd.Flags().GetInt("myint")
@@ -42,7 +51,11 @@ var rootCmd = &cobra.Command{
 		d, _ := cmd.Flags().GetDuration("waittime")
 		fmt.Printf("d is duration %s passed via duration flag and %T\n", d, d)
 		time.Sleep(d)
+		fmt.Println("Config file is : ", viper.ConfigFileUsed())
+
+		//fmt.Println("Config file values : ", viper.GetString("DRIVER"), viper.GetString("HOST"))
 		fmt.Println("End of run")
+
 	},
 }
 
@@ -59,8 +72,8 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
+	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "/home/ps/cliexample2/input.json", "config file (default is $HOME/.cliexample2.yaml)")
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cliexample2.yaml)")
-
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
@@ -81,15 +94,34 @@ func initConfig() {
 		cobra.CheckErr(err)
 
 		// Search config in home directory with name ".cliexample2" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigType("yaml")
-		viper.SetConfigName(".cliexample2")
+		viper.AddConfigPath(strings.Join([]string{home, "/cliexample2/"}, ""))
+		viper.SetConfigType("json")
+		viper.SetConfigName("input")
+
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
+	if err := viper.ReadInConfig(); err != nil {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
+		fmt.Println(err)
 	}
+
+	if err := viper.Unmarshal(&config); err != nil {
+		fmt.Fprintln(os.Stderr, "Config file unmarshal error:")
+		fmt.Println(err)
+	}
+	if errs := validator.Validate(config); errs != nil {
+		// values not valid, deal with errors here
+		fmt.Println("Validation errors", errs)
+
+	}
+	fmt.Printf("Config file values : %+v\n", config)
+
+	/*if err := viper.Unmarshal(&config); err != nil {
+		fmt.Fprintln(os.Stderr, "Config file unmarshal error:")
+		fmt.Println(err)
+	}*/
+
 }
