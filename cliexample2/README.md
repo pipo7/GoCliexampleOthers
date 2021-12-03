@@ -21,10 +21,3 @@ cobra init --pkg-name cliexample2
 OR use below if there is a http or ssh repo with URL
 go mod init github.com/user/cliexample2
 cobra init --pkg-name github.com/user/cliexample2
-
-
-# To run :
-./cliexample2 -h 
-./cliexample2 -i 20 -w "testword" 
-
-To see validations try giving Operations value 0 or -1 or same for workers.
