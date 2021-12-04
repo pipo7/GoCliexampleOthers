@@ -39,7 +39,7 @@ var myconfig MyConfig
 
 type MyConfig struct {
 	word     string
-	myint    int
+	myint    int	`default:"10"` // This is another way to specify default for a struct
 	waittime time.Duration
 }
 
