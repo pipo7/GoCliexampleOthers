@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.9.0
+	gopkg.in/validator.v2 v2.0.0-20210331031555-b37d688a7fb0
 )
 
 require (
@@ -21,6 +22,13 @@ require (
 	github.com/subosito/gotenv v1.2.0 // indirect
 	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf // indirect
 	golang.org/x/text v0.3.6 // indirect
+	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/ini.v1 v1.63.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+)
+
+require (
+	github.com/go-playground/locales v0.14.0 // indirect
+	github.com/go-playground/universal-translator v0.18.0 // indirect
+	github.com/leodido/go-urn v1.2.1 // indirect
 )

@@ -15,7 +15,9 @@ limitations under the License.
 */
 package main
 
-import "cliexample2/cmd"
+import (
+	"cliexample2/cmd"
+)
 
 func main() {
 	cmd.Execute()
