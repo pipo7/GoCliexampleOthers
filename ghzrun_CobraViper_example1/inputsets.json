@@ -1,0 +1,16 @@
+{
+    "inputsets": [
+      {
+        "operations": 100,
+        "workers": 1
+      },
+      {
+        "operations": 1000,
+        "workers": 10
+      },
+      {
+        "operations": 10000,
+        "workers": 100
+      }
+    ]
+}
