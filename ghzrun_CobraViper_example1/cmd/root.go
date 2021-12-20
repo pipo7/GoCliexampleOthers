@@ -16,7 +16,7 @@ type CmdFlags struct {
 	manual           bool
 	outputFormat     string
 	waitTime         time.Duration
-	keyspaceReplicas int
+	Replicas int
 	operations       int
 	workers          int
 	outputDir        string
@@ -79,7 +79,7 @@ func run(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("Error removing files in '%s' output directory: %v", cmdFlags.outputDir, err)
 	}
 
-	// Delete any existing kscks or keyspaces
+	// Delete any existing ID1 or ID2
 	cleanup()
 
 	// Get the name of XYZ pod in cluster
@@ -100,7 +100,7 @@ func run(cmd *cobra.Command, args []string) error {
 	}
 
 	// Execute the copied script in xyz-box
-	fmt.Println("\nExecuting run_in_xyzbox.sh in xyz-box to create KeySpaceControllerKey and KeySpace...")
+	fmt.Println("\nExecuting run_in_xyzbox.sh in xyz-box to create ID2...")
 	_, err = executeCommand("bash", "-c", "kubectl exec -it "+xyzPodName+" -c xyz-box -- /bin/bash run_in_xyzbox.sh")
 	if err != nil {
 		return fmt.Errorf("Error while executing bash file: %v", err)
@@ -153,14 +153,14 @@ func run(cmd *cobra.Command, args []string) error {
 	}
 
 	// Change replicas with patching
-	fmt.Printf("Patching keyspace replicas count to: %d\n", cmdFlags.keyspaceReplicas)
-	replicas := strconv.Itoa(cmdFlags.keyspaceReplicas)
+	fmt.Printf("Patching keyspace replicas count to: %d\n", cmdFlags.Replicas)
+	replicas := strconv.Itoa(cmdFlags.Replicas)
 	_, err = executeCommand("bash", "-c", "kubectl patch keyspace "+deplName+" --patch $'spec:\\n  replicas: "+replicas+"' --type=merge")
 	if err != nil {
 		return fmt.Errorf("Error while patching keyspace replicas count: %v", err)
 	}
 
-	fmt.Printf("Waiting for few seconds - changing replicas count to %d & distributing ksapp pods accross the nodes now \n", cmdFlags.keyspaceReplicas)
+	fmt.Printf("Waiting for few seconds - changing replicas count to %d & distributing ksapp pods accross the nodes now \n", cmdFlags.Replicas)
 	// Not using dynamic wait as sometimes old pods remains in Terminated state for long, and these pods are not requried.
 	time.Sleep(cmdFlags.waitTime)
 
@@ -208,7 +208,7 @@ func init() {
 
 	// Cobra also supports local flags, which will only run when this action is called directly.
 	rootCmd.Flags().BoolVarP(&cmdFlags.manual, "manual", "m", false, "For manual run use --manual boolean flag and ignore it for automated run")
-	rootCmd.Flags().IntVarP(&cmdFlags.keyspaceReplicas, "keyspacereplicas", "k", 4, "You may specify the Keyspace deployment pods' replicas count ,which must be a positive integer")
+	rootCmd.Flags().IntVarP(&cmdFlags.Replicas, "replicas", "k", 4, "You may specify the Keyspace deployment pods' replicas count ,which must be a positive integer")
 	rootCmd.Flags().IntVarP(&cmdFlags.operations, "operations", "n", 200, "Only when using --manual flag , then you may also Specify the number of operations , which must be a positive integer")
 	rootCmd.Flags().IntVarP(&cmdFlags.workers, "workers", "w", 50, "Only when using --manual flag , then you may also specify the number of concurrent workers , which must be a positive integer")
 	rootCmd.Flags().DurationVarP(&cmdFlags.waitTime, "waittime", "t", 60*time.Second, "Time in seconds to wait until all pods are in Runnning state , which must be a positive integer. Example: 30s or 60s")
@@ -218,7 +218,7 @@ func init() {
 
 	//Bind Flags using viper
 	_ = viper.BindPFlag("manual", rootCmd.Flags().Lookup("manual"))
-	_ = viper.BindPFlag("keyspacereplicas", rootCmd.Flags().Lookup("keyspacereplicas"))
+	_ = viper.BindPFlag("replicas", rootCmd.Flags().Lookup("replicas"))
 	_ = viper.BindPFlag("operations", rootCmd.Flags().Lookup("operations"))
 	_ = viper.BindPFlag("workers", rootCmd.Flags().Lookup("workers"))
 	_ = viper.BindPFlag("waittime", rootCmd.Flags().Lookup("waittime"))
@@ -229,12 +229,12 @@ func init() {
 
 func printLongDescText() string {
 	return "\nRuns ghz in manual or automated mode, pass the boolean flag --manual for manual run, See below examples: \n\n" +
-		"\tFor automated run only pass the flag --keyspacereplicas with --outputformat: \n" +
-		"\t\t\tperftest --keyspacereplicas 4 --outputformat 'html'\n" +
+		"\tFor automated run only pass the flag --replicas with --outputformat: \n" +
+		"\t\t\tperftest --replicas 4 --outputformat 'html'\n" +
 		"\t\tOR use shorthand -k flag and specify keyspace replicas count as:\n" +
 		"\t\t\tperftest -k 8 -o 'csv'\n" +
-		"\tFor manual run pass flags --manual, --keyspacereplicas --operations and --workers:\n" +
-		"\t\t\tperftest --manual --keyspacereplicas 4 --operations 1000 --workers 10\n" +
+		"\tFor manual run pass flags --manual, --replicas --operations and --workers:\n" +
+		"\t\t\tperftest --manual --replicas 4 --operations 1000 --workers 10\n" +
 		"\t\tOR use shorthand flags as:\n" +
 		"\t\t\tperftest -m -k 4 -n 100 -c 1\n"
 }
@@ -245,7 +245,7 @@ func initCmdFlags() {
 	cmdFlags.manual = viper.GetBool("manual")
 	cmdFlags.outputFormat = viper.GetString("outputformat")
 	cmdFlags.waitTime = viper.GetDuration("waittime")
-	cmdFlags.keyspaceReplicas = viper.GetInt("keyspacereplicas")
+	cmdFlags.Replicas = viper.GetInt("replicas")
 	cmdFlags.operations = viper.GetInt("operations")
 	cmdFlags.workers = viper.GetInt("workers")
 	cmdFlags.outputDir = viper.GetString("outputdir")
