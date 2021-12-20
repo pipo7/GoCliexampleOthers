@@ -2,25 +2,25 @@
 
 ## algo by default is : aesgcm
 
-## generate new KSCKID and KSID 
-echo "Generating KSCKID, and KSID"
+## generate new ID1, and ID2
+echo "Generating ID1, and ID2"
 # Create new templates
 
 
 
-## generate first time KSCKID and KID and then re-use these
-KSCKID=1234 && echo $KSCKID
-KSID=5678 && echo $KSID
+## generate first time ID1 and ID2 and then re-use these
+ID1=1234 && echo $ID1
+ID2=5678 && echo $ID2
 
-# Check that KSCK and KS ID are genereated ok
-if [ -z "$KSCKID" ] || [ -z "$KSID" ]
+# Check that ID1 and ID2 ID are genereated ok
+if [ -z "$ID1" ] || [ -z "$ID2" ]
 then
-      echo "Either KSCKID OR KSID is empty or not generated due to an error"
+      echo "Either ID1 OR ID2 is empty or not generated due to an error"
       exit 1
 else
-     echo "KSCKID is $KSCKID and KSID is $KSID"
-     export KSCKID
-     export KSID
+     echo "ID1 is $ID1 and ID2 is $ID2"
+     export ID1
+     export ID2
 fi
 
 ## Generating ghzencrypt.json file with config parameters
