@@ -25,8 +25,7 @@ Example of .json input file format :
 # Some Examples
 For automated run only pass the flag --ks with --outputformat:
   perftest --ks 4 --outputformat 'html'
-  OR use shorthand -k flag and specify keyspace replicas count as:
-  perftest -k 8 -o 'csv'
+  OR use shorthand -k flag 
 For manual run pass flags --manual, --ks --operations and --workers:
   perftest --manual --ks 4 --operations 1000 --workers 10
   OR use shorthand flags as:
