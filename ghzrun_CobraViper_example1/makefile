@@ -23,11 +23,7 @@ test:  ## Execute tests
 
 .PHONY: coverage
 coverage:  ## Generate global code coverage report
-	cd $(PROJECT_NAME) && /opt/tools/coverage.sh;
-
-.PHONY: coverhtml
-coverhtml: ## Generate global code coverage report in HTML
-	cd $(PROJECT_NAME) && /opt/tools/coverage.sh html;
+	cd $(PROJECT_NAME) && echo "run covereage shell script if any" ;
 
 .PHONY: lint
 lint: ## Lint the files
