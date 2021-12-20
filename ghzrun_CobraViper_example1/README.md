@@ -1,7 +1,7 @@
 ## Prerequisites
 
 1.	Download the project, navigate to perftest directory, run go mod tidy and then build it as:
-  	"make"
+  	"make"  OR see makefile to run the build. Also it uses golangci-int as linter so install it as needed https://golangci-lint.run/usage/install/.
 2.	Enter the perftest arguments that is the number of operations in operations key value and the number of workers in workers key value in inputsets.json file. Multiple pair values can be entered, each in {} block followed by "," unless it’s the last block
 
 Example of .json input file format :
