@@ -7,3 +7,5 @@ Uses Viper to scan an input file i.e JSON uses viper.Unmarshal
 
 Use of go validator https://github.com/go-validator/validator
 So that validations can be automatically fired on struct design.
+
+Use of kubectl Patch type=merge, Kubectl --wait : wait for pods with condition, grep to get a Pod Name by matching string
